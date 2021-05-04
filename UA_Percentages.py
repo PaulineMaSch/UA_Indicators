@@ -2,7 +2,7 @@ import geopandas as gpd
 
 # load data, choose one option for the UA data depending on the data type
 UA = gpd.read_file('data_files/UK008L3_GREATER_MANCHESTER_UA2012_revised_v021.gpkg', layer='UK008L3_GREATER_MANCHESTER_UA2012_revised')
-#UA = gpd.read_file('data_files/Ruhrgebiet_UA2012.shp')
+#UA = gpd.read_file('data_files/test_UA12_Ruhr.shp')
 Nuts3 = gpd.read_file('data_files/NUTS_RG_01M_2021_3035_LEVL_3.shp')
 Nuts3midpoint = gpd.read_file('data_files/NUTS_LB_2021_3035_LEVL_3.shp')
 
@@ -59,6 +59,7 @@ Code_Perc('14100','50000',join=True)
 
 # export to file
 Nuts3_Area.to_excel(excel_writer=Area+'_UA_Percentages.xlsx')
+#Nuts3_Area.to_file(filename = Area+'_UA_Percentages.shp')
 
 # visualize results geographically
 # ...to be inserted

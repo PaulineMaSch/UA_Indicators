@@ -1,17 +1,19 @@
 import geopandas as gpd
+import matplotlib.pyplot as plt
+import numpy as np
 
 # load data, choose one option for the UA data depending on the data type
-UA = gpd.read_file('data_files/UK008L3_GREATER_MANCHESTER_UA2012_revised_v021.gpkg', layer='UK008L3_GREATER_MANCHESTER_UA2012_revised')
-#UA = gpd.read_file('file path')
+#UA = gpd.read_file('data_files/UK008L3_GREATER_MANCHESTER_UA2012_revised_v021.gpkg', layer='UK008L3_GREATER_MANCHESTER_UA2012_revised')
+UA = gpd.read_file('data_files/test_UA12_Ruhr.shp')
 Nuts3 = gpd.read_file('data_files/NUTS_RG_01M_2021_3035_LEVL_3.shp')
 Nuts3midpoint = gpd.read_file('data_files/NUTS_LB_2021_3035_LEVL_3.shp')
 
 # variables to update based on dataset
 Pop = 'Pop2012'
-Code = 'code_2012'
-Area = 'GTM'
+Code = 'CODE2012'
+Area = 'Ruhr'
 
-# overall task: calculate percentage of overall land use category per Nuts3 unit
+# overall task: calculate percentage of overall UA land use category per Nuts3 unit
 
 # selecting the rows in the Nuts3 data set that make up the UA area
 Nuts3_mid_UA = gpd.sjoin(Nuts3midpoint, UA, op="within", how="left")
@@ -55,8 +57,27 @@ for column in Nuts3_Area.columns[11:]:
 # print(Nuts3_Area)
 # print(Nuts3_Area.columns)
 
-# export to file
-Nuts3_Area.to_excel(excel_writer=Area+'_UA_Distribution.xlsx')
+# export to excel and shapefile
+#Nuts3_Area.to_excel(excel_writer=Area+'_UA_Distribution.xlsx')
+Nuts3_Area.to_file(filename = Area+'_UA_Distribution.shp')
 
 # visualize results graphically
-# ...to be inserted
+def plot_results():
+    plot_array = Nuts3_Area.loc[:,Nuts3_Area.columns.str.startswith('perc_')].to_numpy()
+    plot_array_T = plot_array.T # invert columns and rows
+    label_array = Nuts3_Area['NUTS_NAME_left'] #to get NUTS3 units to label x-axis
+
+    colors = ['lightcoral','khaki', 'seagreen','steelblue','mediumaquamarine']
+    Pos = range(len(plot_array_T[0]))
+
+    for i in range(len(plot_array_T)):
+        plt.bar(Pos, plot_array_T[i], bottom=np.sum(plot_array_T[:i], axis=0), color= colors[i % len(colors)])
+
+    plt.xticks(Pos, label_array,rotation = 20,ha='right')
+    plt.legend(['Artificial Surfaces','Agricultural Areas','Natural Areas','Water','Wetlands'],bbox_to_anchor=(0,1.02,1,0.2), loc="lower center", borderaxespad=0, ncol=2)
+    plt.savefig(fname=Area + '_UA_Distribution.png')
+    plt.show()
+
+plot_results() #still a problem with the savefig, gets cut off
+
+
