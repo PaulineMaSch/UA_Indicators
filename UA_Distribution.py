@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # load data, choose one option for the UA data depending on the data type
-#UA = gpd.read_file('data_files/UK008L3_GREATER_MANCHESTER_UA2012_revised_v021.gpkg', layer='UK008L3_GREATER_MANCHESTER_UA2012_revised')
+#UA = gpd.read_file('data_files/filename.gpkg', layer='layername')
 UA = gpd.read_file('data_files/test_UA12_Ruhr.shp')
 Nuts3 = gpd.read_file('data_files/NUTS_RG_01M_2021_3035_LEVL_3.shp')
 Nuts3midpoint = gpd.read_file('data_files/NUTS_LB_2021_3035_LEVL_3.shp')
@@ -51,15 +51,14 @@ for category in UA_Category['UA_Category'].unique():
 for column in Nuts3_Area.columns[11:]:
    Nuts3_Area['perc_'+column] = Nuts3_Area[column]/Nuts3_Area['Area_Nuts']*100
 
-# several output options, remove '#' based on your preferred outcome
+# several output options, remove '#' based on your preferred output
 
 # show results directly
 # print(Nuts3_Area)
 # print(Nuts3_Area.columns)
 
-# export to excel and shapefile
-#Nuts3_Area.to_excel(excel_writer=Area+'_UA_Distribution.xlsx')
-Nuts3_Area.to_file(filename = Area+'_UA_Distribution.shp')
+#Nuts3_Area.to_excel(excel_writer=Area+'_UA_Distribution.xlsx') # export to excel
+#Nuts3_Area.to_file(filename = Area+'_UA_Distribution.shp') # export to shapefile
 
 # visualize results graphically
 def plot_results():
@@ -74,10 +73,11 @@ def plot_results():
         plt.bar(Pos, plot_array_T[i], bottom=np.sum(plot_array_T[:i], axis=0), color= colors[i % len(colors)])
 
     plt.xticks(Pos, label_array,rotation = 20,ha='right')
-    plt.legend(['Artificial Surfaces','Agricultural Areas','Natural Areas','Water','Wetlands'],bbox_to_anchor=(0,1.02,1,0.2), loc="lower center", borderaxespad=0, ncol=2)
-    plt.savefig(fname=Area + '_UA_Distribution.png')
+    plt.legend(['1: Artificial Surfaces','2: Agricultural Areas','3: Natural Areas','5: Water','4: Wetlands']
+               ,bbox_to_anchor=(0,1.02,1,0.2), loc="lower center", borderaxespad=0, ncol=2)
+    plt.savefig(fname=Area + '_UA_Distribution.png', bbox_inches = 'tight')
     plt.show()
 
-plot_results() #still a problem with the savefig, gets cut off
+#plot_results() #show and export stacked bar chart
 
 
