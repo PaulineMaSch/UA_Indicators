@@ -75,7 +75,7 @@ def plot_results():
     plt.xticks(Pos, label_array,rotation = 20,ha='right')
     plt.legend(['1: Artificial Surfaces','2: Agricultural Areas','3: Natural Areas','5: Water','4: Wetlands']
                ,bbox_to_anchor=(0,1.02,1,0.2), loc="lower center", borderaxespad=0, ncol=2)
-    plt.savefig(fname=Area + '_UA_Distribution.png', bbox_inches = 'tight')
+    plt.savefig(fname=Area + '_UA_Distribution.png', dpi=300, bbox_inches='tight')
     plt.show()
 
 #plot_results() #show and export stacked bar chart
