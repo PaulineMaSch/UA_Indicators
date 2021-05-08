@@ -10,7 +10,7 @@ Nuts3midpoint = gpd.read_file('data_files/NUTS_LB_2021_3035_LEVL_3.shp')
 
 # variables to update based on dataset
 Pop = 'Pop2012'
-Code = 'CODE2012'
+Code = 'code_2012'
 Area = 'Ruhr'
 
 # selecting the rows in the Nuts3 data set that make up the UA area
@@ -33,11 +33,26 @@ UA_Nuts3['Area_UA'] = UA_Nuts3['geometry'].area
 
 # function that can be passed arbitrary number of UA land use codes and will calculate their percentage on the
 # Nuts3 unit either separately or jointly
-def Code_Perc(*uacode, join=False):
+def code_perc(*uacode, join=False):
+    """Calculates percentage of UA Code in the individual NUTS3 units.
+
+       Calculates the percentage of the given UA code(s) given as key(s) for the parameter *uacode. This caculation is
+       done either individually on the keys or jointly on all of them together depending on the join parameter.
+
+       Parameters:
+           *uacode:
+               Takes any number of UA code as a string key. To view a list of possible UA codes print(UA[Code].unique()).
+           join:
+               bool, default=False. If set to True, keys of *uacode will be summarized and only one joint percentage calucalted.
+       Returns:
+           Adds one column with the summarized area of the UA code in sqkm and one column for the percentage of this area
+           in each NUTS3 unit to the gdf. This is returned per key entered into *uacode.
+    """
     global Nuts3_Area
     if join == True:
         for ua in uacode:
-            UA_Category = UA_Nuts3[UA_Nuts3[Code] == ua].groupby(['NUTS_ID_left', Code])['Area_UA'].sum().reset_index(name=ua + '_Area_Sum')
+            UA_Category = UA_Nuts3[UA_Nuts3[Code] == ua].groupby(['NUTS_ID_left', Code])['Area_UA'].sum().reset_index\
+                (name=ua + '_Area_Sum')
             UA_Category[ua + '_Area_Sum'] = UA_Category[ua + '_Area_Sum'] / 10 ** 6  # to get sqkm
             Nuts3_Area = Nuts3_Area.merge(UA_Category, on='NUTS_ID_left', how='left')
             del Nuts3_Area[Code]
@@ -45,13 +60,14 @@ def Code_Perc(*uacode, join=False):
         Nuts3_Area['Join_Percentage'] = Nuts3_Area['Join_Area_Sum'] / Nuts3_Area['Area_Nuts'] * 100
     else:
         for ua in uacode:
-            UA_Category = UA_Nuts3[UA_Nuts3[Code] == ua].groupby(['NUTS_ID_left',Code])['Area_UA'].sum().reset_index(name=ua+'_Area_Sum')
+            UA_Category = UA_Nuts3[UA_Nuts3[Code] == ua].groupby(['NUTS_ID_left',Code])['Area_UA'].sum().reset_index\
+                (name=ua+'_Area_Sum')
             UA_Category[ua+'_Area_Sum'] = UA_Category[ua+'_Area_Sum'] / 10 ** 6  # to get sqkm
             Nuts3_Area = Nuts3_Area.merge(UA_Category, on='NUTS_ID_left', how='left')
             Nuts3_Area[ua+'_Percentage'] = Nuts3_Area[ua+'_Area_Sum'] / Nuts3_Area['Area_Nuts'] * 100
 
-# run the function with the desired UA code(s)
-Code_Perc('14100','23000','31000','32000',join=True)
+# run the function with the desired UA code(s) and join parameter setting
+code_perc('14100','23000','31000','32000',join=True)
 
 
 # several output options, remove '#' based on your preferred outcome
@@ -65,6 +81,7 @@ Code_Perc('14100','23000','31000','32000',join=True)
 
 # visualize results geographically
 def map_results():
+    """Creates a simple map of the results"""
     visual = 'Join_Percentage' # set column whose values you want to plot
     fig, ax = plt.subplots(1,1)
     ax.set_aspect('equal')
