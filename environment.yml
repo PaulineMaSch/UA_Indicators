@@ -1,0 +1,8 @@
+name: UA_Indicators
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8.8
+  - geopandas=0.9.0
+prefix: C:\Users\pauli\Anaconda3\envs\UA_Indicators
