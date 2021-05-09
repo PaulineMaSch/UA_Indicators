@@ -79,7 +79,7 @@ def plot_results():
     plt.savefig(fname=Area + '_UA_Distribution.png', dpi=300, bbox_inches='tight')
     plt.show()
 
-#plot_results() #show and export stacked bar chart
+plot_results() #show and export stacked bar chart
 
 
 
