@@ -67,7 +67,7 @@ def code_perc(*uacode, join=False):
             Nuts3_Area[ua+'_Percentage'] = Nuts3_Area[ua+'_Area_Sum'] / Nuts3_Area['Area_Nuts'] * 100
 
 # run the function with the desired UA code(s) and join parameter setting
-code_perc('14100','23000','31000','32000',join=True)
+code_perc()
 
 
 # several output options, remove '#' based on your preferred outcome
@@ -91,7 +91,7 @@ def map_results():
     Nuts3_Area.plot(ax=ax, column=visual, edgecolor='grey',legend=True, cmap='Greens', cax=cax)
     fig.savefig(Area+'_UA_Percentages.png', dpi=300)
 
-#map_results()
+map_results()
 
 
 
